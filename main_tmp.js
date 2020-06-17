@@ -1,3 +1,5 @@
+// 49-53: fs.readFile[Async] + callback ?????
+
 var http = require('http');
 var fs = require('fs');
 var url = require('url');
@@ -14,7 +16,7 @@ function templateHtml(title, list, body) {
         <h1><a href="/">WEB</a></h1>
         ${list}
         ${body}
-    </body> 
+    </body>
     </html>
     `;
 }
@@ -44,8 +46,12 @@ var app = http.createServer(function(request,response){
                 title = 'Welcome';
                 description = 'Hello, Node.js';
             } else {
-                title = queryData.id;
-                description = fs.readFileSync(`data/${queryData.id}`, 'utf8')
+                fs.readFile(`data/${queryData.id}`, 'utf8', function(error, content) {
+                    title = queryData.id;
+                    description = content;
+                    console.log("01 title:", title, "des: ", description);
+                });
+                console.log("02 title:", title, "des: ", description);
             }
             console.log("03 title:", title, "des: ", description);
             var template = templateHtml(title, list, `<h2>${title}</h2>${description}`);
